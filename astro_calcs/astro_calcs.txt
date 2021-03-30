@@ -1,0 +1,67 @@
+
+echo "Hello World!";
+echo
+echo
+echo "please pick the number assosicated with your astronomical question"
+echo "80-VISIBLE MOON 100-INITIAL MOON STATE 110-MOON POSITION 120-INITIAL SUN STATE 130-SUN POSITION 140-VISIBLE SUN 150-SOLSTICE 190-EARTH ORBIT 200-MOON ORBIT"
+echo "210-MOON PHASE 260-MOON ILLUMINATION 290-LUNASTICE 300-MERCURY 340-VENUS 380-MARS 420-JUPITER 460-SATURN 500-TRANSIT 550-LUNAR ECLIPSE 560-SUN RISE"
+echo "640-TWILIGHT 750-SUN TIME 800-MOON RISE 900-POLAR SUN 940-POLAR MOON 980-SOLAR ECLIPSE 1000-SOLAR SYSTEM POSITIONS"
+echo "Or for 'State of the Solar System type: 'State'"
+read event1Id
+
+echo
+echo "Enter the time and date of your astronomical event"
+echo "Format must be the same as the following 2000-01-12T12:12:12Z"
+echo "format is as follows; YYYY-MM-DDTHH:MN:SSZ"
+echo "Please note 'Z' stands for Zulu Time"
+read eventStart
+while [$event1Id=="State"]
+do echo "please enter second date"; read dur
+done
+echo
+echo
+echo "Enter the Geographical Latitude of your astronomical event"
+echo "Enter in Degrees with up to 7 decimal places"
+echo "Example: Degrees Latitude of Aspen, Co = 39.1910983"
+read eventVal1
+echo
+echo
+echo "Enter the Geographical Longitude of your astronomical event"
+echo "Enter in Degrees with up to 7 decimal places"
+echo "Example: Degrees Longitude of Aspen, Co = -106.8175387"
+read eventVal2
+echo
+echo
+echo "Enter the height of the observer"
+echo "Please enter in Kilometers (km)"
+echo "Example: If I am standing on Mt. Everest my observation height in Kilometers = 40,008.0"
+echo "Enter with up to one decimal place"
+read eventVal3
+echo
+echo
+
+EventURL="http://astro.met.no/astro/cgi-bin/event.pl/?debug=1;eventStart=${eventStart};eventSearch=1;eventVal1=${eventVal1};eventVal2=${eventVal2};eventVal3=${eventVal3};event1Id=${event1Id};"
+StateURL="http://astro.met.no/astro/cgi-bin/state.pl/?lat=$eventVal1;lon=$eventVal2;hgt=$eventVal3;dtg=$eventStart;"
+
+
+if [ "$event1Id" == "State" ]; then
+        echo "Here is your $event1Id URL"
+        echo $StateURL
+        echo
+        echo
+else
+        echo "Here is your $event1Id URL"
+        echo $EventURL
+fi
+
+echo
+echo
+
+if [ "$event1Id" == "State" ]; then
+        echo "Here is your XML"
+        curl -X GET $StateURL -H "Accept:application/xml"
+        echo
+else
+        echo "Here is your XML"
+        curl -X GET $EventURL -H "Accept:application/xml"
+fi
